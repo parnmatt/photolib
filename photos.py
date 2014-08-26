@@ -14,12 +14,10 @@ if (len(argv) != 2 or not isdir(photoDir)):
     exit(1)
 
 def get_images():
-    imageExts = [".jpg", ".png"]
-    images = set()
-    for file in glob("*"):
-        ext = splitext(file)[-1]
-        if (ext.lower() in imageExts):
-            images.add(file)
+    imageExts = (".jpg", ".png")
+    images = set(file
+                 for file in glob("*")
+                 if file.lower().endswith(imageExts))
     return images
 
 def remove_files(fileList):
