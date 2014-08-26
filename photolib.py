@@ -31,7 +31,7 @@ class Photo:
         image = Image.open(self.filename)
         if hasattr(image, "_getexif"):
             rawTags = image._getexif()
-            if rawTags != None:
+            if rawTags is not None:
                 tags = {TAGS.get(tag, tag): value
                             for tag, value in rawTags.items()}
         return tags
@@ -45,7 +45,7 @@ class Photo:
              , tags.get('DateTime'
              , getctime(self.filename))))
 
-        if type(dt) == str:
+        if isinstance(dt, basestring):
             dt = datetime.strptime(dt, "%Y:%m:%d %H:%M:%S")
         else:
             dt = datetime.fromtimestamp(dt)
@@ -92,7 +92,7 @@ class Photo:
         return (self.datetime)
 
     def __eq__(x, y):
-        return type(x) == type(y) and x.__key() == y.__key()
+        return isinstance(x, y) and x.__key() == y.__key()
 
     def __hash__(self):
         return hash(self.__key())
