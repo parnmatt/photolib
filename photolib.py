@@ -9,7 +9,7 @@ from PIL.ExifTags import TAGS
 import string
 
 
-def validFilename(filenameString):
+def valid_filename(filenameString):
     validChars = "-_.() " + string.ascii_letters + string.digits
     filename = "".join(c for c in filenameString if c in validChars)
     filename = filename.replace(" ", "_")
@@ -21,12 +21,12 @@ class Photo:
         self.filename = filename
         self._size = getsize(filename)
 
-        self._tags = self._getTags()
+        self._tags = self._get_tags()
         self._width = self._tags.get('ExifImageWidth', 0)
         self._height = self. _tags.get('ExifImageHeight', 0)
-        self._datetime = self._getDatetime()
+        self._datetime = self._get_datetime()
 
-    def _getTags(self):
+    def _get_tags(self):
         tags = {}
         image = Image.open(self.filename)
         if hasattr(image, "_getexif"):
@@ -39,7 +39,7 @@ class Photo:
     # try metadata
     #   original, then digitised, then modified
     # finally if all failed, created time
-    def _getDatetime(self):
+    def _get_datetime(self):
         dt =   self._tags.get('DateTimeOriginal'
              , self._tags.get('DateTimeDigitized'
              , self._tags.get('DateTime'
@@ -52,9 +52,9 @@ class Photo:
         return dt
 
 
-    def preferedFilename(self):
+    def prefered_filename(self):
         ext = splitext(self.filename)[-1].lower()
-        return validFilename(self._datetime.isoformat() + ext)
+        return valid_filename(self._datetime.isoformat() + ext)
 
     def __cmp__(self, other):
         value = 0

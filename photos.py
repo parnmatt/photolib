@@ -13,7 +13,7 @@ if (len(argv) != 2 or not isdir(photoDir)):
     print "Pass only one existing directory"
     exit(1)
 
-def getImages():
+def get_images():
     imageExts = [".jpg", ".png"]
     images = set()
     for file in glob("*"):
@@ -22,21 +22,21 @@ def getImages():
             images.add(file)
     return images
 
-def removeFiles(fileList):
+def remove_files(fileList):
     for file in fileList:
         remove(file)
 
-def renamePhotos(photos):
+def rename_photos(photos):
     for photo in photos:
-        rename(photo.filename, photo.preferedFilename())
+        rename(photo.filename, photo.prefered_filename())
 
 chdir(photoDir)
-photoFiles = getImages()
+photoFiles = get_images()
 
 # Sort unique files from duplicates
 photos = set(sorted([Photo(photoFile) for photoFile in photoFiles]))
 uniquePhotoFiles = set(photo.filename for photo in photos)
 duplicates = photoFiles - uniquePhotoFiles
 
-removeFiles(duplicates)
-renamePhotos(photos)
+remove_files(duplicates)
+rename_photos(photos)
