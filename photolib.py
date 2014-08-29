@@ -92,7 +92,7 @@ class Photo:
         return (self._datetime)
 
     def __eq__(x, y):
-        return isinstance(x, y) and x.__key() == y.__key()
+        return type(x) is type(y) and x.__key() == y.__key()
 
     def __hash__(self):
         return hash(self.__key())
