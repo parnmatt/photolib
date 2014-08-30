@@ -9,9 +9,9 @@ from PIL.ExifTags import TAGS
 import string
 
 
-def valid_filename(filenameString):
-    validChars = "-_.() " + string.ascii_letters + string.digits
-    filename = "".join(c for c in filenameString if c in validChars)
+def valid_filename(filename_string):
+    valid_chars = "-_.() " + string.ascii_letters + string.digits
+    filename = "".join(c for c in filename_string if c in valid_chars)
     filename = filename.replace(" ", "_")
     return filename
 
@@ -30,10 +30,10 @@ class Photo:
         tags = {}
         image = Image.open(self.filename)
         if hasattr(image, "_getexif"):
-            rawTags = image._getexif()
-            if rawTags is not None:
+            raw_tags = image._getexif()
+            if raw_tags is not None:
                 tags = {TAGS.get(tag, tag): value
-                            for tag, value in rawTags.items()}
+                            for tag, value in raw_tags.items()}
         return tags
 
     # try metadata
