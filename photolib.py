@@ -9,9 +9,9 @@ from PIL.ExifTags import TAGS
 import string
 
 
-def validFilename(filenameString):
-    validChars = "-_.() " + string.ascii_letters + string.digits
-    filename = "".join(c for c in filenameString if c in validChars)
+def valid_filename(filename_string):
+    valid_chars = "-_.() " + string.ascii_letters + string.digits
+    filename = "".join(c for c in filename_string if c in valid_chars)
     filename = filename.replace(" ", "_")
     return filename
 
@@ -19,42 +19,42 @@ class Photo:
     def __init__(self, filename):
 
         self.filename = filename
-        self.size = getsize(filename)
+        self._size = getsize(filename)
 
-        __tags = self.__getTags()
-        self.width = __tags.get('ExifImageWidth', 0)
-        self.height = __tags.get('ExifImageHeight', 0)
-        self.datetime = self.__getDatetime(__tags)
+        self._tags = self._get_tags()
+        self._width = self._tags.get('ExifImageWidth', 0)
+        self._height = self. _tags.get('ExifImageHeight', 0)
+        self._datetime = self._get_datetime()
 
-    def __getTags(self):
+    def _get_tags(self):
         tags = {}
         image = Image.open(self.filename)
         if hasattr(image, "_getexif"):
-            rawTags = image._getexif()
-            if rawTags != None:
+            raw_tags = image._getexif()
+            if raw_tags is not None:
                 tags = {TAGS.get(tag, tag): value
-                            for tag, value in rawTags.items()}
+                            for tag, value in raw_tags.items()}
         return tags
 
     # try metadata
     #   original, then digitised, then modified
     # finally if all failed, created time
-    def __getDatetime(self, tags):
-        dt =   tags.get('DateTimeOriginal'
-             , tags.get('DateTimeDigitized'
-             , tags.get('DateTime'
+    def _get_datetime(self):
+        dt =   self._tags.get('DateTimeOriginal'
+             , self._tags.get('DateTimeDigitized'
+             , self._tags.get('DateTime'
              , getctime(self.filename))))
 
-        if type(dt) == str:
+        if isinstance(dt, basestring):
             dt = datetime.strptime(dt, "%Y:%m:%d %H:%M:%S")
         else:
             dt = datetime.fromtimestamp(dt)
         return dt
 
 
-    def preferedFilename(self):
+    def prefered_filename(self):
         ext = splitext(self.filename)[-1].lower()
-        return validFilename(self.datetime.isoformat() + ext)
+        return valid_filename(self._datetime.isoformat() + ext)
 
     def __cmp__(self, other):
         value = 0
@@ -62,21 +62,21 @@ class Photo:
         up = 1
 
         # earlier datetime
-        if (self.datetime < other.datetime):
+        if (self._datetime < other._datetime):
             value = down
-        elif (self.datetime > other.datetime):
+        elif (self._datetime > other._datetime):
             value = up
 
         # large area
-        elif (self.width * self.height > other.width * other.height):
+        elif (self._width * self._height > other._width * other._height):
             value = down
-        elif (self.width * self.height < other.width * other.height):
+        elif (self._width * self._height < other._width * other._height):
             value = up
 
         # smaller filesize
-        elif (self.size < other.size):
+        elif (self._size < other._size):
             value = down
-        elif (self.size > other.size):
+        elif (self._size > other._size):
             value = up
 
         # alphanumerical
@@ -89,10 +89,10 @@ class Photo:
 
     # Photo tuple of unique objects
     def __key(self):
-        return (self.datetime)
+        return (self._datetime)
 
     def __eq__(x, y):
-        return type(x) == type(y) and x.__key() == y.__key()
+        return type(x) is type(y) and x.__key() == y.__key()
 
     def __hash__(self):
         return hash(self.__key())
@@ -102,7 +102,7 @@ class Photo:
 
     def __repr__(self):
         return repr({'filename': self.filename,
-                    'width': self.width,
-                    'height': self.height,
-                    'datetime': self.datetime,
-                    'size': self.size})
+                    'width': self._width,
+                    'height': self._height,
+                    'datetime': self._datetime,
+                    'size': self._size})
