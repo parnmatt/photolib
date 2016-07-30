@@ -8,35 +8,35 @@ from sys import argv
 from photolib import Photo
 
 # Require only one directory
-photoDir = abspath(argv[1])
-if (len(argv) != 2 or not isdir(photoDir)):
-    print "Pass only one existing directory"
+photo_dir = abspath(argv[1])
+if (len(argv) != 2 or not isdir(photo_dir)):
+    print("Pass only one existing directory")
     exit(1)
 
-def getImages():
-    imageExts = [".jpg", ".png"]
+def get_images():
+    image_exts = [".jpg", ".png"]
     images = set()
     for file in glob("*"):
         ext = splitext(file)[-1]
-        if (ext.lower() in imageExts):
+        if (ext.lower() in image_exts):
             images.add(file)
     return images
 
-def removeFiles(fileList):
-    for file in fileList:
+def remove_files(file_list):
+    for file in file_list:
         remove(file)
 
-def renamePhotos(photos):
+def rename_photos(photos):
     for photo in photos:
-        rename(photo.filename, photo.preferedFilename())
+        rename(photo.filename, photo.prefered_filename())
 
-chdir(photoDir)
-photoFiles = getImages()
+chdir(photo_dir)
+photo_files = get_images()
 
 # Sort unique files from duplicates
-photos = set(sorted([Photo(photoFile) for photoFile in photoFiles]))
-uniquePhotoFiles = set(photo.filename for photo in photos)
-duplicates = photoFiles - uniquePhotoFiles
+photos = set(sorted([Photo(photo_file) for photo_file in photo_files]))
+unique_photo_files = set(photo.filename for photo in photos)
+duplicates = photo_files - unique_photo_files
 
-removeFiles(duplicates)
-renamePhotos(photos)
+remove_files(duplicates)
+rename_photos(photos)
